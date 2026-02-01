@@ -3,11 +3,13 @@
 URLをメモとして保存・管理するPWA（Progressive Web App）です。
 Androidの共有機能から直接URLを取り込み、メモとして保存できます。
 
+**アプリURL**: https://ilolio.github.io/URL-sharing-support-PWA/
+
 ## 使い方
 
 ### インストール
 
-1. Chrome（Android）で本アプリのURLにアクセス
+1. Chrome（Android）で[アプリURL](https://ilolio.github.io/URL-sharing-support-PWA/)にアクセス
 2. 「ホーム画面に追加」からインストール
 3. ホーム画面のアイコンからアプリとして起動
 

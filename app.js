@@ -3,6 +3,7 @@
 
   // --- Storage ---
   const STORAGE_KEY = 'url_memo_data';
+  const SETTINGS_KEY = 'url_memo_settings';
 
   function loadMemos() {
     try {
@@ -18,6 +19,23 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(memos));
     } catch (e) {
       showToast('保存容量を超えました');
+    }
+  }
+
+  function loadSettings() {
+    try {
+      var raw = localStorage.getItem(SETTINGS_KEY);
+      return raw ? JSON.parse(raw) : { addNewlineAfterUrl: false, showCharCount: false };
+    } catch {
+      return { addNewlineAfterUrl: false, showCharCount: false };
+    }
+  }
+
+  function saveSettings(settings) {
+    try {
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+    } catch (e) {
+      showToast('設定の保存に失敗しました');
     }
   }
 
@@ -41,6 +59,12 @@
   const deleteDialog = document.getElementById('delete-dialog');
   const btnDeleteCancel = document.getElementById('btn-delete-cancel');
   const btnDeleteConfirm = document.getElementById('btn-delete-confirm');
+  const settingsView = document.getElementById('settings-view');
+  const btnSettings = document.getElementById('btn-settings');
+  const btnSettingsBack = document.getElementById('btn-settings-back');
+  const settingNewline = document.getElementById('setting-newline');
+  const settingCharcount = document.getElementById('setting-charcount');
+  const charCountEl = document.getElementById('char-count');
 
   // --- State ---
   let currentMemoId = null;
@@ -57,9 +81,32 @@
     }, 2000);
   }
 
+  // --- Character count (X spec: U+0000-U+10FF = 1, U+1100+ = 2) ---
+  function countWeightedChars(text) {
+    var count = 0;
+    for (var i = 0; i < text.length; i++) {
+      var cp = text.codePointAt(i);
+      if (cp > 0xFFFF) i++;
+      count += cp <= 0x10FF ? 1 : 2;
+    }
+    return count;
+  }
+
+  function updateCharCount() {
+    var settings = loadSettings();
+    if (settings.showCharCount && !editView.classList.contains('hidden')) {
+      charCountEl.classList.remove('hidden');
+      var count = countWeightedChars(memoText.value);
+      charCountEl.textContent = count + '文字';
+    } else {
+      charCountEl.classList.add('hidden');
+    }
+  }
+
   // --- View switching ---
   function showListView() {
     editView.classList.add('hidden');
+    settingsView.classList.add('hidden');
     listView.classList.remove('hidden');
     currentMemoId = null;
     renderList();
@@ -67,6 +114,7 @@
 
   function showEditView(memo) {
     listView.classList.add('hidden');
+    settingsView.classList.add('hidden');
     editView.classList.remove('hidden');
     if (memo) {
       currentMemoId = memo.id;
@@ -78,6 +126,16 @@
       editTitle.textContent = '新規メモ';
     }
     memoText.focus();
+    updateCharCount();
+  }
+
+  function showSettingsView() {
+    listView.classList.add('hidden');
+    editView.classList.add('hidden');
+    settingsView.classList.remove('hidden');
+    var settings = loadSettings();
+    settingNewline.checked = settings.addNewlineAfterUrl;
+    settingCharcount.checked = settings.showCharCount;
   }
 
   // --- Rendering ---
@@ -305,6 +363,30 @@
     }
   });
 
+  // --- Settings ---
+  btnSettings.addEventListener('click', function () {
+    showSettingsView();
+  });
+
+  btnSettingsBack.addEventListener('click', function () {
+    showListView();
+  });
+
+  settingNewline.addEventListener('change', function () {
+    var settings = loadSettings();
+    settings.addNewlineAfterUrl = settingNewline.checked;
+    saveSettings(settings);
+  });
+
+  settingCharcount.addEventListener('change', function () {
+    var settings = loadSettings();
+    settings.showCharCount = settingCharcount.checked;
+    saveSettings(settings);
+    updateCharCount();
+  });
+
+  memoText.addEventListener('input', updateCharCount);
+
   // --- Share Target handling ---
   function handleShareTarget() {
     var params = new URLSearchParams(window.location.search);
@@ -332,6 +414,11 @@
 
     var initialText = parts.join(' | ');
 
+    var settings = loadSettings();
+    if (settings.addNewlineAfterUrl) {
+      initialText += '\n';
+    }
+
     // Clean up URL params
     if (window.history && window.history.replaceState) {
       window.history.replaceState({}, '', window.location.pathname);
@@ -340,6 +427,7 @@
     showEditView(null);
     memoText.value = initialText;
     editTitle.textContent = '新規メモ';
+    updateCharCount();
 
     return true;
   }
