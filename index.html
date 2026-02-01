@@ -15,6 +15,7 @@
   <div id="list-view" class="view">
     <header>
       <h1>URL Memo</h1>
+      <button id="btn-settings" class="header-btn" aria-label="設定">⚙</button>
     </header>
     <div id="memo-list" class="memo-list"></div>
     <div id="empty-state" class="empty-state">
@@ -31,6 +32,7 @@
     </header>
     <div class="edit-container">
       <textarea id="memo-text" placeholder="メモを入力..."></textarea>
+      <div id="char-count" class="char-count hidden"></div>
       <div class="edit-actions">
         <button id="btn-copy" class="action-btn" type="button">コピー</button>
         <button id="btn-share" class="action-btn" type="button">共有</button>
@@ -38,6 +40,36 @@
       <div class="edit-main-actions">
         <button id="btn-cancel" class="btn btn-secondary" type="button">キャンセル</button>
         <button id="btn-save" class="btn btn-primary" type="button">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 設定画面 -->
+  <div id="settings-view" class="view hidden">
+    <header>
+      <button id="btn-settings-back" class="header-btn" aria-label="戻る">←</button>
+      <h1>設定</h1>
+    </header>
+    <div class="settings-container">
+      <div class="settings-item">
+        <div class="settings-item-label">
+          <div class="settings-item-title">URL後に改行を追加</div>
+          <div class="settings-item-desc">共有されたURLの後に改行を挿入します</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="setting-newline">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="settings-item">
+        <div class="settings-item-label">
+          <div class="settings-item-title">文字数カウント表示</div>
+          <div class="settings-item-desc">メモ編集中に文字数を表示します（X準拠：半角1、全角2）</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="setting-charcount">
+          <span class="toggle-slider"></span>
+        </label>
       </div>
     </div>
   </div>
