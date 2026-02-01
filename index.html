@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1a73e8">
+  <title>URL Memo</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- リスト画面 -->
+  <div id="list-view" class="view">
+    <header>
+      <h1>URL Memo</h1>
+    </header>
+    <div id="memo-list" class="memo-list"></div>
+    <div id="empty-state" class="empty-state">
+      <p>メモはまだありません</p>
+      <p class="sub">右下の＋ボタンで新規作成できます</p>
+    </div>
+    <button id="btn-new" class="fab" aria-label="新規作成">＋</button>
+  </div>
+
+  <!-- 編集画面 -->
+  <div id="edit-view" class="view hidden">
+    <header>
+      <h1 id="edit-title">メモ編集</h1>
+    </header>
+    <div class="edit-container">
+      <textarea id="memo-text" placeholder="メモを入力..."></textarea>
+      <div class="edit-actions">
+        <button id="btn-copy" class="action-btn" type="button">コピー</button>
+        <button id="btn-share" class="action-btn" type="button">共有</button>
+      </div>
+      <div class="edit-main-actions">
+        <button id="btn-cancel" class="btn btn-secondary" type="button">キャンセル</button>
+        <button id="btn-save" class="btn btn-primary" type="button">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- トースト通知 -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- 削除確認ダイアログ -->
+  <div id="delete-dialog" class="dialog-overlay hidden">
+    <div class="dialog">
+      <p>このメモを削除しますか？</p>
+      <div class="dialog-actions">
+        <button id="btn-delete-cancel" class="btn btn-secondary" type="button">キャンセル</button>
+        <button id="btn-delete-confirm" class="btn btn-danger" type="button">削除</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
