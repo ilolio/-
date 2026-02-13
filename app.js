@@ -2,7 +2,7 @@
   'use strict';
 
   // --- Constants ---
-  const APP_VERSION = '1.5.0';
+  const APP_VERSION = '1.5.1';
   const STORAGE_KEY = 'url_memo_data';
   const SETTINGS_KEY = 'url_memo_settings';
 
@@ -113,6 +113,7 @@
   // --- View switching ---
   function showListView() {
     editView.classList.add('hidden');
+    editView.style.height = '';
     settingsView.classList.add('hidden');
     listView.classList.remove('hidden');
     currentMemoId = null;
@@ -448,6 +449,24 @@
     updateCharCount();
 
     return true;
+  }
+
+  // --- Visual Viewport handling (モバイルキーボード対応) ---
+  function handleViewportResize() {
+    if (editView.classList.contains('hidden')) return;
+    if (window.visualViewport) {
+      editView.style.height = window.visualViewport.height + 'px';
+      window.scrollTo(0, 0);
+    }
+  }
+
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', handleViewportResize);
+    window.visualViewport.addEventListener('scroll', function () {
+      if (!editView.classList.contains('hidden') && window.visualViewport.offsetTop > 0) {
+        window.scrollTo(0, 0);
+      }
+    });
   }
 
   // --- Service Worker registration ---
