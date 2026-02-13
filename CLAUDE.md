@@ -48,7 +48,7 @@ Memos are stored as a JSON array in `localStorage` under key `url_memo_data`:
 
 ### Service Worker (`sw.js`)
 
-- **Cache name**: `url-memo-v2` (bump version when assets change)
+- **Cache name**: `url-memo-v{APP_VERSION}` (e.g., `url-memo-v1.4.0`)
 - **Install**: Pre-caches all static assets
 - **Activate**: Deletes old cache versions
 - **Fetch strategy**: Cache-first, with network fallback that updates cache
@@ -107,7 +107,9 @@ npx serve .
 
 1. Edit static files directly (`app.js`, `style.css`, `index.html`)
 2. If adding/removing cached assets, update the `ASSETS` array in `sw.js`
-3. When deploying asset changes, bump `CACHE_NAME` in `sw.js` (e.g., `url-memo-v3`)
+3. When deploying asset changes, bump version in **both** files to the same value:
+   - `APP_VERSION` in `app.js` (設定画面に表示されるバージョン)
+   - `CACHE_NAME` in `sw.js` (`url-memo-v{VERSION}` の形式、例: `url-memo-v1.5.0`)
 4. Test in browser — Service Worker may need manual unregister/reload during dev
 
 ### Deployment
@@ -137,7 +139,7 @@ Manual browser testing only (no test framework):
 
 - This is a **zero-dependency, no-build project**. Do not introduce `package.json`, bundlers, or frameworks.
 - All UI strings are in **Japanese**. Maintain this convention for any new user-facing text.
-- The Service Worker cache version (`CACHE_NAME` in `sw.js`) must be bumped when any cached asset changes.
+- バージョン更新時は `app.js` の `APP_VERSION` と `sw.js` の `CACHE_NAME` を必ず同時に同じバージョン番号で更新すること。`CACHE_NAME` は `url-memo-v{VERSION}` の形式。
 - The `ASSETS` array in `sw.js` must stay in sync with actual files in the project.
 - The `manifest.json` `share_target` configuration is critical for the app's core functionality — changes here affect how the app receives shared URLs on Android.
 - Use `./` relative paths (not `/`) for GitHub Pages compatibility.
