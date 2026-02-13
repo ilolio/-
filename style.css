@@ -34,6 +34,13 @@ html, body {
   flex-direction: column;
 }
 
+#edit-view {
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+}
+
 .hidden {
   display: none !important;
 }
@@ -228,7 +235,7 @@ header h1 {
 
 #memo-text {
   flex: 1;
-  min-height: 200px;
+  min-height: 80px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 16px;
