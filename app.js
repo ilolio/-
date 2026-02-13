@@ -81,8 +81,12 @@
     }, 2000);
   }
 
-  // --- Character count (X spec: U+0000-U+10FF = 1, U+1100+ = 2) ---
+  // --- Character count (twitter-text parseTweet準拠) ---
   function countWeightedChars(text) {
+    if (typeof twttr !== 'undefined' && twttr.txt && twttr.txt.parseTweet) {
+      return twttr.txt.parseTweet(text).weightedLength;
+    }
+    // フォールバック: ライブラリ未読み込み時は単純な長さを返す
     var count = 0;
     for (var i = 0; i < text.length; i++) {
       var cp = text.codePointAt(i);
