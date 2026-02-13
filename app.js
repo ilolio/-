@@ -1,7 +1,8 @@
 (function () {
   'use strict';
 
-  // --- Storage ---
+  // --- Constants ---
+  const APP_VERSION = '1.0.0';
   const STORAGE_KEY = 'url_memo_data';
   const SETTINGS_KEY = 'url_memo_settings';
 
@@ -65,6 +66,7 @@
   const settingNewline = document.getElementById('setting-newline');
   const settingCharcount = document.getElementById('setting-charcount');
   const charCountEl = document.getElementById('char-count');
+  const appVersionEl = document.getElementById('app-version');
 
   // --- State ---
   let currentMemoId = null;
@@ -140,6 +142,7 @@
     var settings = loadSettings();
     settingNewline.checked = settings.addNewlineAfterUrl;
     settingCharcount.checked = settings.showCharCount;
+    appVersionEl.textContent = 'URL Memo v' + APP_VERSION;
   }
 
   // --- Rendering ---

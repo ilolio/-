@@ -459,3 +459,14 @@ header h1 {
 .toggle input:checked + .toggle-slider::before {
   transform: translateX(20px);
 }
+
+/* Settings Footer */
+.settings-footer {
+  padding: 24px 16px;
+  text-align: center;
+}
+
+.settings-version {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
