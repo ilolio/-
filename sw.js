@@ -1,4 +1,4 @@
-var CACHE_NAME = 'url-memo-v4';
+var CACHE_NAME = 'url-memo-v1.4.0';
 var ASSETS = [
   './',
   './index.html',
