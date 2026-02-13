@@ -2,7 +2,7 @@
   'use strict';
 
   // --- Constants ---
-  const APP_VERSION = '1.4.0';
+  const APP_VERSION = '1.5.0';
   const STORAGE_KEY = 'url_memo_data';
   const SETTINGS_KEY = 'url_memo_settings';
 
@@ -56,6 +56,7 @@
   const btnCancel = document.getElementById('btn-cancel');
   const btnCopy = document.getElementById('btn-copy');
   const btnShare = document.getElementById('btn-share');
+  const btnPostX = document.getElementById('btn-post-x');
   const toastEl = document.getElementById('toast');
   const deleteDialog = document.getElementById('delete-dialog');
   const btnDeleteCancel = document.getElementById('btn-delete-cancel');
@@ -368,6 +369,16 @@
     } else {
       showToast('この環境では共有機能を使用できません');
     }
+  });
+
+  btnPostX.addEventListener('click', function () {
+    var text = memoText.value;
+    if (!text) {
+      showToast('ポストするテキストがありません');
+      return;
+    }
+    var url = 'https://x.com/intent/tweet?text=' + encodeURIComponent(text);
+    window.open(url, '_blank');
   });
 
   // --- Settings ---

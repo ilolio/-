@@ -275,6 +275,16 @@ header h1 {
   background: #e8f0fe;
 }
 
+.action-btn-x {
+  background: #000;
+  color: #fff;
+  border-color: #000;
+}
+
+.action-btn-x:active {
+  background: #333;
+}
+
 .edit-main-actions {
   display: flex;
   gap: 8px;
