@@ -26,9 +26,9 @@
   function loadSettings() {
     try {
       var raw = localStorage.getItem(SETTINGS_KEY);
-      return raw ? JSON.parse(raw) : { addNewlineAfterUrl: false, showCharCount: false, editOnShare: false };
+      return raw ? JSON.parse(raw) : { addNewlineAfterUrl: false, showCharCount: true, editOnShare: false };
     } catch {
-      return { addNewlineAfterUrl: false, showCharCount: false, editOnShare: false };
+      return { addNewlineAfterUrl: false, showCharCount: true, editOnShare: false };
     }
   }
 
@@ -69,6 +69,9 @@
   const settingCharcount = document.getElementById('setting-charcount');
   const charCountEl = document.getElementById('char-count');
   const appVersionEl = document.getElementById('app-version');
+  const licenseDialog = document.getElementById('license-dialog');
+  const btnLicense = document.getElementById('btn-license');
+  const btnLicenseClose = document.getElementById('btn-license-close');
   const quickShareDialog = document.getElementById('quick-share-dialog');
   const quickSharePreview = document.getElementById('quick-share-preview');
   const btnQuickShare = document.getElementById('btn-quick-share');
@@ -416,6 +419,22 @@
     settings.showCharCount = settingCharcount.checked;
     saveSettings(settings);
     updateCharCount();
+  });
+
+  // --- License dialog ---
+  btnLicense.addEventListener('click', function (e) {
+    e.preventDefault();
+    licenseDialog.classList.remove('hidden');
+  });
+
+  btnLicenseClose.addEventListener('click', function () {
+    licenseDialog.classList.add('hidden');
+  });
+
+  licenseDialog.addEventListener('click', function (e) {
+    if (e.target === licenseDialog) {
+      licenseDialog.classList.add('hidden');
+    }
   });
 
   memoText.addEventListener('input', updateCharCount);
