@@ -542,3 +542,51 @@ header h1 {
 .settings-links a:active {
   text-decoration: underline;
 }
+
+/* License Dialog */
+.license-dialog {
+  max-width: 360px;
+}
+
+.license-dialog-title {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.license-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.license-item {
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 12px 16px;
+}
+
+.license-item-name {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.license-item-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.license-item a {
+  font-size: 13px;
+  color: var(--primary);
+  text-decoration: none;
+  margin-top: 6px;
+  display: inline-block;
+}
+
+.license-item a:active {
+  text-decoration: underline;
+}

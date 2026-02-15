@@ -87,7 +87,7 @@
       <div id="app-version" class="settings-version"></div>
       <div class="settings-links">
         <a href="https://x.com/ilolio" target="_blank" rel="noopener noreferrer">お問い合わせ（開発者）</a>
-        <a href="https://github.com/twitter/twitter-text/blob/master/LICENSE" target="_blank" rel="noopener noreferrer">使用ライブラリのライセンス</a>
+        <a href="#" id="btn-license">使用ライブラリのライセンス</a>
       </div>
     </div>
   </div>
@@ -101,6 +101,23 @@
         <button id="btn-quick-post-x" class="action-btn action-btn-x" type="button">Xでポスト</button>
       </div>
       <button id="btn-quick-edit" class="btn btn-secondary quick-share-edit-btn" type="button">テキストを編集</button>
+    </div>
+  </div>
+
+  <!-- ライセンスモーダル -->
+  <div id="license-dialog" class="dialog-overlay hidden">
+    <div class="dialog license-dialog">
+      <h2 class="license-dialog-title">使用ライブラリ</h2>
+      <div class="license-list">
+        <div class="license-item">
+          <div class="license-item-name">twitter-text</div>
+          <div class="license-item-desc">X（Twitter）の文字数カウントに使用</div>
+          <a href="https://github.com/twitter/twitter-text/blob/master/LICENSE" target="_blank" rel="noopener noreferrer">Apache License 2.0</a>
+        </div>
+      </div>
+      <div class="dialog-actions">
+        <button id="btn-license-close" class="btn btn-secondary" type="button">閉じる</button>
+      </div>
     </div>
   </div>
 
