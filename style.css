@@ -525,3 +525,20 @@ header h1 {
   font-size: 13px;
   color: var(--text-secondary);
 }
+
+.settings-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.settings-links a {
+  font-size: 13px;
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.settings-links a:active {
+  text-decoration: underline;
+}

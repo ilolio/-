@@ -26,9 +26,9 @@
   function loadSettings() {
     try {
       var raw = localStorage.getItem(SETTINGS_KEY);
-      return raw ? JSON.parse(raw) : { addNewlineAfterUrl: false, showCharCount: false, editOnShare: false };
+      return raw ? JSON.parse(raw) : { addNewlineAfterUrl: false, showCharCount: true, editOnShare: false };
     } catch {
-      return { addNewlineAfterUrl: false, showCharCount: false, editOnShare: false };
+      return { addNewlineAfterUrl: false, showCharCount: true, editOnShare: false };
     }
   }
 
