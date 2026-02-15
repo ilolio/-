@@ -38,9 +38,12 @@ self.addEventListener('fetch', function (e) {
 
   // Share Target: let it pass through to the page with query params
   if (url.searchParams.has('title') || url.searchParams.has('text') || url.searchParams.has('url')) {
+    var rootUrl = new URL('./', self.location).href;
     e.respondWith(
-      caches.match('./index.html').then(function (response) {
-        return response || fetch(e.request);
+      caches.match(new Request(rootUrl)).then(function (response) {
+        if (response) return response;
+        // キャッシュミス時はクエリパラメータなしのルートをfetch
+        return fetch(rootUrl);
       })
     );
     return;
