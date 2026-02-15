@@ -2,7 +2,7 @@
   'use strict';
 
   // --- Constants ---
-  const APP_VERSION = '1.5.1';
+  const APP_VERSION = '1.5.3';
   const STORAGE_KEY = 'url_memo_data';
   const SETTINGS_KEY = 'url_memo_settings';
 
