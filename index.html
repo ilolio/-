@@ -52,15 +52,17 @@
       <h1>設定</h1>
     </header>
     <div class="settings-container">
-      <div class="settings-item">
+      <div class="settings-item settings-item-vertical">
         <div class="settings-item-label">
-          <div class="settings-item-title">共有時にテキストを編集</div>
-          <div class="settings-item-desc">OFFの場合、すぐに再共有・Xポストに移行します</div>
+          <div class="settings-item-title">クイック共有の動作</div>
+          <div class="settings-item-desc">URLを受け取ったときの動作を選択します</div>
         </div>
-        <label class="toggle">
-          <input type="checkbox" id="setting-edit-on-share">
-          <span class="toggle-slider"></span>
-        </label>
+        <select id="setting-quick-share-action" class="settings-select">
+          <option value="ask">毎回選ぶ</option>
+          <option value="edit">テキストを編集する</option>
+          <option value="postX">Xにポストする</option>
+          <option value="reshare">他のアプリに共有する</option>
+        </select>
       </div>
       <div class="settings-item">
         <div class="settings-item-label">

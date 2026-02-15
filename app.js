@@ -2,7 +2,7 @@
   'use strict';
 
   // --- Constants ---
-  const APP_VERSION = '1.6.0';
+  const APP_VERSION = '1.7.0';
   const STORAGE_KEY = 'url_memo_data';
   const SETTINGS_KEY = 'url_memo_settings';
 
@@ -24,11 +24,21 @@
   }
 
   function loadSettings() {
+    var defaults = { addNewlineAfterUrl: false, showCharCount: false, quickShareAction: 'ask' };
     try {
       var raw = localStorage.getItem(SETTINGS_KEY);
-      return raw ? JSON.parse(raw) : { addNewlineAfterUrl: false, showCharCount: false, editOnShare: false };
+      if (!raw) return defaults;
+      var parsed = JSON.parse(raw);
+      // editOnShare (旧設定) からの移行
+      if ('editOnShare' in parsed && !('quickShareAction' in parsed)) {
+        parsed.quickShareAction = parsed.editOnShare ? 'edit' : 'ask';
+        delete parsed.editOnShare;
+        saveSettings(parsed);
+      }
+      if (!parsed.quickShareAction) parsed.quickShareAction = 'ask';
+      return parsed;
     } catch {
-      return { addNewlineAfterUrl: false, showCharCount: false, editOnShare: false };
+      return defaults;
     }
   }
 
@@ -64,7 +74,7 @@
   const settingsView = document.getElementById('settings-view');
   const btnSettings = document.getElementById('btn-settings');
   const btnSettingsBack = document.getElementById('btn-settings-back');
-  const settingEditOnShare = document.getElementById('setting-edit-on-share');
+  const settingQuickShareAction = document.getElementById('setting-quick-share-action');
   const settingNewline = document.getElementById('setting-newline');
   const settingCharcount = document.getElementById('setting-charcount');
   const charCountEl = document.getElementById('char-count');
@@ -149,7 +159,7 @@
     editView.classList.add('hidden');
     settingsView.classList.remove('hidden');
     var settings = loadSettings();
-    settingEditOnShare.checked = settings.editOnShare;
+    settingQuickShareAction.value = settings.quickShareAction || 'ask';
     settingNewline.checked = settings.addNewlineAfterUrl;
     settingCharcount.checked = settings.showCharCount;
     appVersionEl.textContent = 'URL Memo v' + APP_VERSION;
@@ -399,9 +409,10 @@
     showListView();
   });
 
-  settingEditOnShare.addEventListener('change', function () {
+  settingQuickShareAction.addEventListener('change', function () {
     var settings = loadSettings();
-    settings.editOnShare = settingEditOnShare.checked;
+    settings.quickShareAction = settingQuickShareAction.value;
+    delete settings.editOnShare;
     saveSettings(settings);
   });
 
@@ -513,14 +524,16 @@
     }
 
     var settings = loadSettings();
-    if (settings.editOnShare) {
-      // Current behavior: open edit view
+    var action = settings.quickShareAction || 'ask';
+
+    if (action === 'edit') {
+      // 編集画面を開く
       showEditView(null);
       memoText.value = initialText;
       editTitle.textContent = '新規メモ';
       updateCharCount();
     } else {
-      // Quick share: save memo and show action sheet
+      // まずメモを保存
       var memos = loadMemos();
       var now = Date.now();
       memos.push({
@@ -530,7 +543,28 @@
         updatedAt: now
       });
       saveMemos(memos);
-      showQuickShareDialog(initialText);
+
+      if (action === 'postX') {
+        // 直接Xにポスト
+        var xUrl = 'https://x.com/intent/tweet?text=' + encodeURIComponent(initialText);
+        window.open(xUrl, '_blank');
+        showListView();
+      } else if (action === 'reshare') {
+        // 直接他のアプリに共有
+        if (navigator.share) {
+          navigator.share({ text: initialText }).then(function () {
+            showListView();
+          }).catch(function () {
+            showListView();
+          });
+        } else {
+          showToast('この環境では共有機能を使用できません');
+          showListView();
+        }
+      } else {
+        // ask: アクション選択ダイアログを表示
+        showQuickShareDialog(initialText);
+      }
     }
 
     return true;
