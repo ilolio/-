@@ -2,7 +2,7 @@
   'use strict';
 
   // --- Constants ---
-  const APP_VERSION = '1.5.3';
+  const APP_VERSION = '1.6.0';
   const STORAGE_KEY = 'url_memo_data';
   const SETTINGS_KEY = 'url_memo_settings';
 
@@ -26,9 +26,9 @@
   function loadSettings() {
     try {
       var raw = localStorage.getItem(SETTINGS_KEY);
-      return raw ? JSON.parse(raw) : { addNewlineAfterUrl: false, showCharCount: false };
+      return raw ? JSON.parse(raw) : { addNewlineAfterUrl: false, showCharCount: false, editOnShare: false };
     } catch {
-      return { addNewlineAfterUrl: false, showCharCount: false };
+      return { addNewlineAfterUrl: false, showCharCount: false, editOnShare: false };
     }
   }
 
@@ -64,15 +64,22 @@
   const settingsView = document.getElementById('settings-view');
   const btnSettings = document.getElementById('btn-settings');
   const btnSettingsBack = document.getElementById('btn-settings-back');
+  const settingEditOnShare = document.getElementById('setting-edit-on-share');
   const settingNewline = document.getElementById('setting-newline');
   const settingCharcount = document.getElementById('setting-charcount');
   const charCountEl = document.getElementById('char-count');
   const appVersionEl = document.getElementById('app-version');
+  const quickShareDialog = document.getElementById('quick-share-dialog');
+  const quickSharePreview = document.getElementById('quick-share-preview');
+  const btnQuickShare = document.getElementById('btn-quick-share');
+  const btnQuickPostX = document.getElementById('btn-quick-post-x');
+  const btnQuickEdit = document.getElementById('btn-quick-edit');
 
   // --- State ---
   let currentMemoId = null;
   let deleteTargetId = null;
   let toastTimer = null;
+  let quickShareText = '';
 
   // --- Toast ---
   function showToast(message) {
@@ -142,6 +149,7 @@
     editView.classList.add('hidden');
     settingsView.classList.remove('hidden');
     var settings = loadSettings();
+    settingEditOnShare.checked = settings.editOnShare;
     settingNewline.checked = settings.addNewlineAfterUrl;
     settingCharcount.checked = settings.showCharCount;
     appVersionEl.textContent = 'URL Memo v' + APP_VERSION;
@@ -391,6 +399,12 @@
     showListView();
   });
 
+  settingEditOnShare.addEventListener('change', function () {
+    var settings = loadSettings();
+    settings.editOnShare = settingEditOnShare.checked;
+    saveSettings(settings);
+  });
+
   settingNewline.addEventListener('change', function () {
     var settings = loadSettings();
     settings.addNewlineAfterUrl = settingNewline.checked;
@@ -406,19 +420,58 @@
 
   memoText.addEventListener('input', updateCharCount);
 
-  // --- Share Target handling ---
-  function handleShareTarget() {
-    var params = new URLSearchParams(window.location.search);
-    var title = params.get('title') || '';
-    var url = params.get('url') || '';
-    var text = params.get('text') || '';
+  // --- Quick Share dialog ---
+  function showQuickShareDialog(text) {
+    quickShareText = text;
+    quickSharePreview.textContent = text;
+    quickShareDialog.classList.remove('hidden');
+  }
 
-    // If no share params, show list
-    if (!title && !url && !text) {
-      return false;
+  function hideQuickShareDialog() {
+    quickShareDialog.classList.add('hidden');
+    quickShareText = '';
+  }
+
+  btnQuickShare.addEventListener('click', function () {
+    if (!quickShareText) return;
+    if (navigator.share) {
+      navigator.share({ text: quickShareText }).then(function () {
+        hideQuickShareDialog();
+        showListView();
+      }).catch(function () {
+        // User cancelled share
+      });
+    } else {
+      showToast('この環境では共有機能を使用できません');
     }
+  });
 
-    // Build initial text: "タイトル | URL" or just URL or text
+  btnQuickPostX.addEventListener('click', function () {
+    if (!quickShareText) return;
+    var xUrl = 'https://x.com/intent/tweet?text=' + encodeURIComponent(quickShareText);
+    window.open(xUrl, '_blank');
+    hideQuickShareDialog();
+    showListView();
+  });
+
+  btnQuickEdit.addEventListener('click', function () {
+    var text = quickShareText;
+    hideQuickShareDialog();
+    showEditView(null);
+    memoText.value = text;
+    editTitle.textContent = '新規メモ';
+    updateCharCount();
+  });
+
+  quickShareDialog.addEventListener('click', function (e) {
+    if (e.target === quickShareDialog) {
+      hideQuickShareDialog();
+      showListView();
+    }
+  });
+
+  // --- Share Target handling ---
+  function buildShareText(title, url, text) {
     var parts = [];
     if (title) parts.push(title);
     if (url) parts.push(url);
@@ -438,15 +491,47 @@
       initialText += '\n';
     }
 
+    return initialText;
+  }
+
+  function handleShareTarget() {
+    var params = new URLSearchParams(window.location.search);
+    var title = params.get('title') || '';
+    var url = params.get('url') || '';
+    var text = params.get('text') || '';
+
+    // If no share params, show list
+    if (!title && !url && !text) {
+      return false;
+    }
+
+    var initialText = buildShareText(title, url, text);
+
     // Clean up URL params
     if (window.history && window.history.replaceState) {
       window.history.replaceState({}, '', window.location.pathname);
     }
 
-    showEditView(null);
-    memoText.value = initialText;
-    editTitle.textContent = '新規メモ';
-    updateCharCount();
+    var settings = loadSettings();
+    if (settings.editOnShare) {
+      // Current behavior: open edit view
+      showEditView(null);
+      memoText.value = initialText;
+      editTitle.textContent = '新規メモ';
+      updateCharCount();
+    } else {
+      // Quick share: save memo and show action sheet
+      var memos = loadMemos();
+      var now = Date.now();
+      memos.push({
+        id: generateId(),
+        text: initialText,
+        createdAt: now,
+        updatedAt: now
+      });
+      saveMemos(memos);
+      showQuickShareDialog(initialText);
+    }
 
     return true;
   }

@@ -54,6 +54,16 @@
     <div class="settings-container">
       <div class="settings-item">
         <div class="settings-item-label">
+          <div class="settings-item-title">共有時にテキストを編集</div>
+          <div class="settings-item-desc">OFFの場合、すぐに再共有・Xポストに移行します</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="setting-edit-on-share">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="settings-item">
+        <div class="settings-item-label">
           <div class="settings-item-title">URL後に改行を追加</div>
           <div class="settings-item-desc">共有されたURLの後に改行を挿入します</div>
         </div>
@@ -75,6 +85,18 @@
     </div>
     <div class="settings-footer">
       <div id="app-version" class="settings-version"></div>
+    </div>
+  </div>
+
+  <!-- クイック共有アクションシート -->
+  <div id="quick-share-dialog" class="dialog-overlay hidden">
+    <div class="quick-share-sheet">
+      <div class="quick-share-preview" id="quick-share-preview"></div>
+      <div class="quick-share-actions">
+        <button id="btn-quick-share" class="action-btn" type="button">共有</button>
+        <button id="btn-quick-post-x" class="action-btn action-btn-x" type="button">Xでポスト</button>
+      </div>
+      <button id="btn-quick-edit" class="btn btn-secondary quick-share-edit-btn" type="button">テキストを編集</button>
     </div>
   </div>
 
